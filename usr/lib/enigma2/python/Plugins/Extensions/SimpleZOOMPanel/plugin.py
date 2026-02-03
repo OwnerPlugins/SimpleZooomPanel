@@ -78,7 +78,11 @@ def save_personal_lines_from_files():
             try:
                 with open(source, 'r') as f:
                     content = f.read().strip()
-                print("DEBUG: Found file:", source, "Content length:", len(content))
+                print(
+                    "DEBUG: Found file:",
+                    source,
+                    "Content length:",
+                    len(content))
 
                 if content:
                     with open(destination, 'w') as f:
@@ -147,7 +151,9 @@ def add_personal_lines_to_cccam_only():
                     with open(cccam_path, 'w') as f:
                         f.write(new_content + '\n')
 
-                    print("DEBUG: Added personal CCCam lines to %s" % cccam_path)
+                    print(
+                        "DEBUG: Added personal CCCam lines to %s" %
+                        cccam_path)
 
 
 def convert_personal_lines_if_needed():
@@ -409,9 +415,11 @@ def findCccam():
         cmd = 'find %s -name "CCcam.cfg"' % directory
         try:
             if PY3:
-                res = subprocess.check_output(cmd, shell=True, stderr=subprocess.PIPE).decode('utf-8').strip()
+                res = subprocess.check_output(
+                    cmd, shell=True, stderr=subprocess.PIPE).decode('utf-8').strip()
             else:
-                res = subprocess.check_output(cmd, shell=True, stderr=subprocess.PIPE).strip()
+                res = subprocess.check_output(
+                    cmd, shell=True, stderr=subprocess.PIPE).strip()
             if res:
                 paths.extend(res.splitlines())
         except subprocess.CalledProcessError:
@@ -477,7 +485,8 @@ def prependToFile(file_pathx):
     marker_start = "### ORIGINAL START ###"
     marker_end = "### ORIGINAL END ###"
     if marker_start not in original_content:
-        original_content = marker_start + "\n" + original_content.strip() + "\n" + marker_end + "\n"
+        original_content = marker_start + "\n" + original_content.strip() + "\n" + \
+            marker_end + "\n"
         print("DEBUG: Added marker to backup %s" % file_pathx)
     else:
         print("DEBUG: Marker present in backup %s" % file_pathx)
@@ -577,7 +586,9 @@ class MainMenus(Screen):
         self["detail"] = Label("Select an option to view details")
 
         # Additional detail labels for each icon
-        self["detail1"] = Label("A suite of utility tools. Version %s" % __version__)
+        self["detail1"] = Label(
+            "A suite of utility tools. Version %s" %
+            __version__)
         self["detail2"] = Label("Additional features and enhancements.")
         self["detail3"] = Label("Customize plugin to your preference.")
         self["detail4"] = Label("Install CronTimer. Use Plugin Image")
@@ -603,7 +614,8 @@ class MainMenus(Screen):
             self.session.open(SubMenu, "Tools", [
                 ("Free Cline Access", self.askForUserPreference),
                 ("Update FCA Script", self.askForUpdateFca),
-                ("Save Personal Lines", self.savePersonalLines)  # recoded from lululla
+                # recoded from lululla
+                ("Save Personal Lines", self.savePersonalLines)
             ])
         elif self.selectedIcon == 2:
             self.session.open(SubMenu, "Extras", [
@@ -671,11 +683,18 @@ class MainMenus(Screen):
                 message += "\nThey will be automatically added after each update."
             else:
                 message = "No personal line files found!\n\nPlease create one of these files:\n- /etc/cccamx.txt\n- /etc/oscamx.txt\n- /etc/ncamx.txt\n\nwith your personal C-lines and try again."
-            self.session.open(MessageBox, message, MessageBox.TYPE_INFO, timeout=10)
+            self.session.open(
+                MessageBox,
+                message,
+                MessageBox.TYPE_INFO,
+                timeout=10)
 
-    # recoded from lululla Prompts the user to confirm the installation of crontimer
+    # recoded from lululla Prompts the user to confirm the installation of
+    # crontimer
     def installcron(self):
-        self.askForConfirmation("Do you want to install Cron Script?", self.confirmInstallCron)
+        self.askForConfirmation(
+            "Do you want to install Cron Script?",
+            self.confirmInstallCron)
 
     def is_crond_running(self):
         output = popen("pgrep crond").read().strip()
@@ -701,12 +720,22 @@ class MainMenus(Screen):
         self.Console = Console()
         if not self.my_crond_run:
             print("DEBUG: Starting crond...")
-            self.Console.ePopen("/usr/sbin/crond -c /var/spool/cron/crontabs", self.startStopCallback)
-            self.session.open(MessageBox, "Please wait, starting crontimer!", MessageBox.TYPE_INFO, timeout=5)
+            self.Console.ePopen(
+                "/usr/sbin/crond -c /var/spool/cron/crontabs",
+                self.startStopCallback)
+            self.session.open(
+                MessageBox,
+                "Please wait, starting crontimer!",
+                MessageBox.TYPE_INFO,
+                timeout=5)
         else:
             print("DEBUG: Stopping crond...")
             self.Console.ePopen("killall crond", self.startStopCallback)
-            self.session.open(MessageBox, "Please wait, stopping crontimer!", MessageBox.TYPE_INFO, timeout=5)
+            self.session.open(
+                MessageBox,
+                "Please wait, stopping crontimer!",
+                MessageBox.TYPE_INFO,
+                timeout=5)
 
     def crondStop(self):
         """Stop the crond service"""
@@ -714,12 +743,22 @@ class MainMenus(Screen):
         if self.my_crond_run:
             print("DEBUG: Stopping crond...")
             self.Console.ePopen("killall crond", self.startStopCallback)
-            self.session.open(MessageBox, "Please wait, stopping crontimer!", MessageBox.TYPE_INFO, timeout=5)
+            self.session.open(
+                MessageBox,
+                "Please wait, stopping crontimer!",
+                MessageBox.TYPE_INFO,
+                timeout=5)
         else:
-            self.session.open(MessageBox, "CronTimer is already stopped!", MessageBox.TYPE_INFO, timeout=5)
+            self.session.open(
+                MessageBox,
+                "CronTimer is already stopped!",
+                MessageBox.TYPE_INFO,
+                timeout=5)
 
     def startStopCallback(self, result=None, retval=None, extra_args=None):
-        print("DEBUG: Callback triggered -> result=%s, retval=%s, extra_args=%s" % (result, retval, extra_args))
+        print(
+            "DEBUG: Callback triggered -> result=%s, retval=%s, extra_args=%s" %
+            (result, retval, extra_args))
         sleep(3)
         self.on_init_cron()
 
@@ -730,12 +769,15 @@ class MainMenus(Screen):
                 try:
                     source = "/usr/lib/enigma2/python/Plugins/Extensions/SimpleZOOMPanel/root"
                     destination = "/etc/cron/crontabs/root"
-                    command = "mkdir -p /etc/cron/crontabs; cp %s %s && chmod +x %s" % (source, destination, destination)
+                    command = "mkdir -p /etc/cron/crontabs; cp %s %s && chmod +x %s" % (
+                        source, destination, destination)
                     result = subprocess.call(command, shell=True)
                     if result == 0:
                         print("DEBUG: Cron installed successfully")
                     else:
-                        print("DEBUG: Cron installation failed with code %s" % result)
+                        print(
+                            "DEBUG: Cron installation failed with code %s" %
+                            result)
                 except Exception as e:
                     print("DEBUG: Error installing cron: %s" % str(e))
 
@@ -743,7 +785,11 @@ class MainMenus(Screen):
             thread = threading.Thread(target=install_cron)
             thread.daemon = True
             thread.start()
-            self.session.open(MessageBox, "Installing cron job script in background...", MessageBox.TYPE_INFO, timeout=5)
+            self.session.open(
+                MessageBox,
+                "Installing cron job script in background...",
+                MessageBox.TYPE_INFO,
+                timeout=5)
 
     # simply the update
     def update(self):
@@ -754,8 +800,7 @@ class MainMenus(Screen):
                 add_personal_lines_to_configs()
                 command = (
                     'wget -q --no-check-certificate '
-                    'https://raw.githubusercontent.com/Belfagor2005/SimpleZooomPanel/main/installer.sh -O - | /bin/sh'
-                )
+                    'https://raw.githubusercontent.com/Belfagor2005/SimpleZooomPanel/main/installer.sh -O - | /bin/sh')
                 result = subprocess.call(command, shell=True)
                 if result == 0:
                     print("DEBUG: Panel updated successfully")
@@ -768,7 +813,11 @@ class MainMenus(Screen):
         thread = threading.Thread(target=update_panel)
         thread.daemon = True
         thread.start()
-        self.session.open(MessageBox, "Updating panel in background...", MessageBox.TYPE_INFO, timeout=5)
+        self.session.open(
+            MessageBox,
+            "Updating panel in background...",
+            MessageBox.TYPE_INFO,
+            timeout=5)
 
     def updateSelection(self):
         descriptions = ["Tools", "Extras", "Settings", "CronTimer", "Help"]
@@ -784,14 +833,16 @@ class MainMenus(Screen):
 
                 self["desc%s" % i].setText(descriptions[i - 1])
 
-    # Handles the confirmation for installing FCA Script from Lululla git # fixed lululla
+    # Handles the confirmation for installing FCA Script from Lululla git #
+    # fixed lululla
     def UpdateFca(self, confirmed):
         if confirmed:
             # First add personal lines if they exist
             add_personal_lines_to_configs()
 
             # Then update the script
-            command = "wget -O %s 'https://raw.githubusercontent.com/Belfagor2005/SimpleZooomPanel/refs/heads/main/usr/lib/enigma2/python/Plugins/Extensions/SimpleZOOMPanel/Centrum/Tools/FCA.sh' && chmod +x %s" % (SCRIPT_PATH, SCRIPT_PATH)
+            command = "wget -O %s 'https://raw.githubusercontent.com/Belfagor2005/SimpleZooomPanel/refs/heads/main/usr/lib/enigma2/python/Plugins/Extensions/SimpleZOOMPanel/Centrum/Tools/FCA.sh' && chmod +x %s" % (
+                SCRIPT_PATH, SCRIPT_PATH)
             self.console = Console()
             self.console.ePopen(command, None)
 
@@ -801,7 +852,9 @@ class MainMenus(Screen):
                               timeout=5)
 
     def updateFilesWithBackup(self):
-        if not hasattr(self, 'cccam_original_content') or not self.cccam_original_content:
+        if not hasattr(
+                self,
+                'cccam_original_content') or not self.cccam_original_content:
             print("ERROR: cccam_original_content is not available")
             return
 
@@ -857,7 +910,9 @@ class MainMenus(Screen):
 
             # Check if personal servers already exist
             if '# Personal Converted CCcam servers' in existing_content:
-                print("DEBUG: Personal servers already present in %s - SKIPPING" % file_path)
+                print(
+                    "DEBUG: Personal servers already present in %s - SKIPPING" %
+                    file_path)
                 return
 
             # Append personal servers at the end of the file
@@ -880,11 +935,17 @@ class MainMenus(Screen):
 
     # Dummy function to indicate unimplemented options
     def dummy(self):
-        self.session.open(MessageBox, "This option is not yet implemented.", MessageBox.TYPE_INFO, timeout=5)
+        self.session.open(
+            MessageBox,
+            "This option is not yet implemented.",
+            MessageBox.TYPE_INFO,
+            timeout=5)
 
     # Prompts the user to confirm the installation of SoftCAM feed
     def installSoftCAMFeed(self):
-        self.askForConfirmation("Do you want to install SoftCAM feed?", self.confirmInstallSoftCAMFeed)
+        self.askForConfirmation(
+            "Do you want to install SoftCAM feed?",
+            self.confirmInstallSoftCAMFeed)
 
     # Handles the confirmation for installing SoftCAM feed
     def confirmInstallSoftCAMFeed(self, confirmed):
@@ -897,7 +958,9 @@ class MainMenus(Screen):
                     if result == 0:
                         print("DEBUG: SoftCAM feed installed successfully")
                     else:
-                        print("DEBUG: SoftCAM feed installation failed with code %s" % result)
+                        print(
+                            "DEBUG: SoftCAM feed installation failed with code %s" %
+                            result)
                 except Exception as e:
                     print("DEBUG: Error installing SoftCAM feed: %s" % str(e))
 
@@ -905,11 +968,17 @@ class MainMenus(Screen):
             thread = threading.Thread(target=install_softcam)
             thread.daemon = True
             thread.start()
-            self.session.open(MessageBox, "Installing SoftCAM feed in background...", MessageBox.TYPE_INFO, timeout=5)
+            self.session.open(
+                MessageBox,
+                "Installing SoftCAM feed in background...",
+                MessageBox.TYPE_INFO,
+                timeout=5)
 
     # Prompts the user to confirm the installation of HomeMade config
     def installHomeMadeConfig(self):
-        self.askForConfirmation("Do you want to install \"HomeMade\" config?", self.confirmInstallHomeMadeConfig)
+        self.askForConfirmation(
+            "Do you want to install \"HomeMade\" config?",
+            self.confirmInstallHomeMadeConfig)
 
     # Handles the confirmation for installing HomeMade config
     def confirmInstallHomeMadeConfig(self, confirmed):
@@ -935,14 +1004,25 @@ class MainMenus(Screen):
                 with zipfile.ZipFile(download_path, 'r') as zip_ref:
                     zip_ref.extractall("/etc/tuxbox/")
 
-                self.session.open(MessageBox, "\"HomeMade\" config installed successfully. Please control your location of config. Default and also installed this way is /etc/tuxbox/config/!", MessageBox.TYPE_INFO, timeout=10)
+                self.session.open(
+                    MessageBox,
+                    "\"HomeMade\" config installed successfully. Please control your location of config. Default and also installed this way is /etc/tuxbox/config/!",
+                    MessageBox.TYPE_INFO,
+                    timeout=10)
             except Exception as e:
                 # Handle errors during the installation process
-                self.session.open(MessageBox, "Error installing HomeMade config:" + str(e), MessageBox.TYPE_ERROR, timeout=5)
+                self.session.open(
+                    MessageBox,
+                    "Error installing HomeMade config:" +
+                    str(e),
+                    MessageBox.TYPE_ERROR,
+                    timeout=5)
 
     # Prompts the user to confirm the installation of CURL
     def installCURL(self):
-        self.askForConfirmation("Do you want to install CURL?", self.confirmInstallCURL)
+        self.askForConfirmation(
+            "Do you want to install CURL?",
+            self.confirmInstallCURL)
 
     # Handles the confirmation for installing CURL
     def confirmInstallCURL(self, confirmed):
@@ -955,7 +1035,9 @@ class MainMenus(Screen):
                     if result == 0:
                         print("DEBUG: CURL installed successfully")
                     else:
-                        print("DEBUG: CURL installation failed with code %s" % result)
+                        print(
+                            "DEBUG: CURL installation failed with code %s" %
+                            result)
                 except Exception as e:
                     print("DEBUG: Error installing CURL: %s" % str(e))
 
@@ -963,11 +1045,17 @@ class MainMenus(Screen):
             thread = threading.Thread(target=install_curl)
             thread.daemon = True
             thread.start()
-            self.session.open(MessageBox, "Installing CURL in background...", MessageBox.TYPE_INFO, timeout=5)
+            self.session.open(
+                MessageBox,
+                "Installing CURL in background...",
+                MessageBox.TYPE_INFO,
+                timeout=5)
 
     # Prompts the user to confirm the installation of WGET
     def installWGET(self):
-        self.askForConfirmation("Do you want to install WGET?", self.confirmInstallWGET)
+        self.askForConfirmation(
+            "Do you want to install WGET?",
+            self.confirmInstallWGET)
 
     # Handles the confirmation for installing WGET
     def confirmInstallWGET(self, confirmed):
@@ -980,7 +1068,9 @@ class MainMenus(Screen):
                     if result == 0:
                         print("DEBUG: WGET installed successfully")
                     else:
-                        print("DEBUG: WGET installation failed with code %s" % result)
+                        print(
+                            "DEBUG: WGET installation failed with code %s" %
+                            result)
                 except Exception as e:
                     print("DEBUG: Error installing WGET: %s" % str(e))
 
@@ -989,11 +1079,17 @@ class MainMenus(Screen):
             thread.daemon = True
             thread.start()
 
-            self.session.open(MessageBox, "Installing WGET in background...", MessageBox.TYPE_INFO, timeout=5)
+            self.session.open(
+                MessageBox,
+                "Installing WGET in background...",
+                MessageBox.TYPE_INFO,
+                timeout=5)
 
     # Prompts the user to confirm the installation of Python
     def installPython(self):
-        self.askForConfirmation("Do you want to install Python?", self.confirmInstallPython)
+        self.askForConfirmation(
+            "Do you want to install Python?",
+            self.confirmInstallPython)
 
     # Handles the confirmation for installing Python
     def confirmInstallPython(self, confirmed):
@@ -1012,7 +1108,9 @@ class MainMenus(Screen):
                     if result == 0:
                         print("DEBUG: Python installed successfully")
                     else:
-                        print("DEBUG: Python installation failed with code %s" % result)
+                        print(
+                            "DEBUG: Python installation failed with code %s" %
+                            result)
                 except Exception as e:
                     print("DEBUG: Error installing Python: %s" % str(e))
 
@@ -1020,11 +1118,17 @@ class MainMenus(Screen):
             thread = threading.Thread(target=install_python)
             thread.daemon = True
             thread.start()
-            self.session.open(MessageBox, "Installing Python in background...", MessageBox.TYPE_INFO, timeout=5)
+            self.session.open(
+                MessageBox,
+                "Installing Python in background...",
+                MessageBox.TYPE_INFO,
+                timeout=5)
 
     # Prompts the user to confirm the addition of CCCAM/CCCAMDATAX/OSCAMDATAX
     def installCCCAMDATAX(self):
-        self.askForConfirmation("Do you want to add CCCAM.CFG/OSCAM.CFG/CCCAMDATAX/OSCAMDATAX?", self.confirmInstallCCCAMDATAX)
+        self.askForConfirmation(
+            "Do you want to add CCCAM.CFG/OSCAM.CFG/CCCAMDATAX/OSCAMDATAX?",
+            self.confirmInstallCCCAMDATAX)
 
     # Handles the confirmation for adding CCCAM/CCCAMDATAX/OSCAMDATAX
     def confirmInstallCCCAMDATAX(self, confirmed):
@@ -1038,23 +1142,44 @@ class MainMenus(Screen):
 
                 # Check if the config files already exist
                 if exists(cccam_cfg_path) and exists(cccamdatax_cfg_path):
-                    self.session.open(MessageBox, "CCCAM/OSCAM/CCCAMDATAX/OSCAMDATAX already added.", MessageBox.TYPE_INFO, timeout=5)
+                    self.session.open(
+                        MessageBox,
+                        "CCCAM/OSCAM/CCCAMDATAX/OSCAMDATAX already added.",
+                        MessageBox.TYPE_INFO,
+                        timeout=5)
                 else:
                     # Create the config files if they do not exist
-                    cfg_paths = [cccam_cfg_path, oscam_cfg_path, cccamdatax_cfg_path, oscamdatax_cfg_path]
+                    cfg_paths = [
+                        cccam_cfg_path,
+                        oscam_cfg_path,
+                        cccamdatax_cfg_path,
+                        oscamdatax_cfg_path]
                     for path in cfg_paths:
                         if not exists(path):
                             open(path, 'a').close()
-                    self.session.open(MessageBox, "CCCAM.CFG/OSCAM.CFG/CCCAMDATAX/OSCAMDATAX added successfully.", MessageBox.TYPE_INFO, timeout=5)
+                    self.session.open(
+                        MessageBox,
+                        "CCCAM.CFG/OSCAM.CFG/CCCAMDATAX/OSCAMDATAX added successfully.",
+                        MessageBox.TYPE_INFO,
+                        timeout=5)
             except Exception as e:
                 # Handle errors during the addition process
-                self.session.open(MessageBox, "Error installing CCCAM.CFG/OSCAM.CFG/CCCAMDATAX/OSCAMDATAX: " + str(e), MessageBox.TYPE_ERROR, timeout=15)
+                self.session.open(
+                    MessageBox,
+                    "Error installing CCCAM.CFG/OSCAM.CFG/CCCAMDATAX/OSCAMDATAX: " +
+                    str(e),
+                    MessageBox.TYPE_ERROR,
+                    timeout=15)
 
     def scriptFinished(self, result=None, retval=None, extra_args=None):
         print("DEBUG: Script finished, proceeding with file updates.")
         print("DEBUG: Script result:", result)
         print("DEBUG: Script retval:", retval)
-        if hasattr(self, 'cccam_original_content') and hasattr(self, 'oscam_original_content'):
+        if hasattr(
+                self,
+                'cccam_original_content') and hasattr(
+                self,
+                'oscam_original_content'):
             self.updateFilesWithBackup()
         else:
             print("ERROR: Backup content not found!")
@@ -1062,18 +1187,29 @@ class MainMenus(Screen):
     # Run the script FCA in the background
     def runScriptInBackground(self):
         if self.script_running.is_set():
-            self.session.open(MessageBox, "Please wait, the process is still running!", MessageBox.TYPE_INFO, timeout=5)
+            self.session.open(
+                MessageBox,
+                "Please wait, the process is still running!",
+                MessageBox.TYPE_INFO,
+                timeout=5)
             return
         self.script_running.set()
 
         chmod(SCRIPT_PATH, 0o777)
-        threading.Thread(target=self.executeScript, args=(SCRIPT_PATH,)).start()
-        self.session.open(MessageBox, "Process has started. Please wait for completion!", MessageBox.TYPE_INFO, timeout=10)
+        threading.Thread(
+            target=self.executeScript, args=(
+                SCRIPT_PATH,)).start()
+        self.session.open(
+            MessageBox,
+            "Process has started. Please wait for completion!",
+            MessageBox.TYPE_INFO,
+            timeout=10)
 
     # recoded from lululla # fixed lululla
     def runScriptWithPreference(self, confirmed):
         # confirmed = True when the user presses YES (wants to see the process)
-        # confirmed = False when the user presses NO (does not want to see the process)
+        # confirmed = False when the user presses NO (does not want to see the
+        # process)
 
         print("DEBUG: User preference - see process:", confirmed)
 
@@ -1122,15 +1258,17 @@ class MainMenus(Screen):
             self.console = Console()
             self.console.ePopen("sh '%s'" % SCRIPT_PATH, self.scriptFinished)
 
-            self.session.open(MessageBox,
-                              "Script execution started. Please wait for completion...",
-                              MessageBox.TYPE_INFO,
-                              timeout=5)
+            self.session.open(
+                MessageBox,
+                "Script execution started. Please wait for completion...",
+                MessageBox.TYPE_INFO,
+                timeout=5)
         else:
-            self.session.open(MessageBox,
-                              "Error: file not found\nSimpleZOOMPanel/Centrum/Tools/FCA.sh",
-                              MessageBox.TYPE_ERROR,
-                              timeout=10)
+            self.session.open(
+                MessageBox,
+                "Error: file not found\nSimpleZOOMPanel/Centrum/Tools/FCA.sh",
+                MessageBox.TYPE_ERROR,
+                timeout=10)
 
     # Installs AJPanel
     def runAJPanel(self):
@@ -1218,13 +1356,14 @@ class MainMenus(Screen):
                 command = (
                     "/bin/sh -c 'wget -q --no-check-certificate "
                     "https://raw.githubusercontent.com/archivczsk/archivczsk/main/build/archivczsk_installer.sh "
-                    "-O /tmp/archivczsk_installer.sh && /bin/sh /tmp/archivczsk_installer.sh'"
-                )
+                    "-O /tmp/archivczsk_installer.sh && /bin/sh /tmp/archivczsk_installer.sh'")
                 result = subprocess.call(command, shell=True)
                 if result == 0:
                     print("DEBUG: ArchivCZSK installed successfully")
                 else:
-                    print("DEBUG: ArchivCZSK installation failed with code %s" % result)
+                    print(
+                        "DEBUG: ArchivCZSK installation failed with code %s" %
+                        result)
             except Exception as e:
                 print("DEBUG: Error installing ArchivCZSK: %s" % str(e))
 
@@ -1232,7 +1371,11 @@ class MainMenus(Screen):
         thread = threading.Thread(target=install_archiv)
         thread.daemon = True
         thread.start()
-        self.session.open(MessageBox, "Installing ArchivCZSK in background...", MessageBox.TYPE_INFO, timeout=5)
+        self.session.open(
+            MessageBox,
+            "Installing ArchivCZSK in background...",
+            MessageBox.TYPE_INFO,
+            timeout=5)
 
     # Installs CSFD
     def runCSFD(self):
@@ -1242,13 +1385,14 @@ class MainMenus(Screen):
                 command = (
                     "/bin/sh -c 'opkg install "
                     "https://github.com/skyjet18/enigma2-plugin-extensions-csfd/releases/download/"
-                    "v18.00/enigma2-plugin-extensions-csfd_18.00-20230919_all.ipk'"
-                )
+                    "v18.00/enigma2-plugin-extensions-csfd_18.00-20230919_all.ipk'")
                 result = subprocess.call(command, shell=True)
                 if result == 0:
                     print("DEBUG: CSFD installed successfully")
                 else:
-                    print("DEBUG: CSFD installation failed with code %s" % result)
+                    print(
+                        "DEBUG: CSFD installation failed with code %s" %
+                        result)
             except Exception as e:
                 print("DEBUG: Error installing CSFD: %s" % str(e))
 
@@ -1256,35 +1400,70 @@ class MainMenus(Screen):
         thread = threading.Thread(target=install_csfd)
         thread.daemon = True
         thread.start()
-        self.session.open(MessageBox, "Installing CSFD in background...", MessageBox.TYPE_INFO, timeout=5)
+        self.session.open(
+            MessageBox,
+            "Installing CSFD in background...",
+            MessageBox.TYPE_INFO,
+            timeout=5)
 
     # Runs a given command and handles success or failure
     def runCommand(self, command, success_msg, error_msg):
         if self.script_running.is_set():
-            self.session.open(MessageBox, "Please wait, the process is still running!", MessageBox.TYPE_INFO, timeout=15)
+            self.session.open(
+                MessageBox,
+                "Please wait, the process is still running!",
+                MessageBox.TYPE_INFO,
+                timeout=15)
             return
         self.script_running.set()
-        threading.Thread(target=self.executeCommand, args=(command, success_msg, error_msg)).start()
-        self.session.open(MessageBox, "Process has started. Please wait for completion.", MessageBox.TYPE_INFO, timeout=10)
+        threading.Thread(
+            target=self.executeCommand,
+            args=(
+                command,
+                success_msg,
+                error_msg)).start()
+        self.session.open(
+            MessageBox,
+            "Process has started. Please wait for completion.",
+            MessageBox.TYPE_INFO,
+            timeout=10)
 
-    # Executes a given command and shows appropriate messages based on the result
+    # Executes a given command and shows appropriate messages based on the
+    # result
     def executeCommand(self, command, success_msg, error_msg):
         try:
             # Run the command with shell access and capture the output
-            result = subprocess.run(command, shell=True, capture_output=True, text=True)
+            result = subprocess.run(
+                command, shell=True, capture_output=True, text=True)
 
             # Check if the command execution was successful
             if result.returncode != 0:
-                self.session.open(MessageBox, error_msg + ":\n" + result.stderr, MessageBox.TYPE_ERROR, timeout=15)
+                self.session.open(
+                    MessageBox,
+                    error_msg +
+                    ":\n" +
+                    result.stderr,
+                    MessageBox.TYPE_ERROR,
+                    timeout=15)
             else:
                 # Split the output into pages to display
                 PAGE_SIZE = 1000
-                output_pages = [result.stdout[i:i + PAGE_SIZE] for i in range(0, len(result.stdout), PAGE_SIZE)]
+                output_pages = [result.stdout[i:i + PAGE_SIZE]
+                                for i in range(0, len(result.stdout), PAGE_SIZE)]
                 self.showOutputPages(output_pages, 0)
-                self.session.open(MessageBox, success_msg, MessageBox.TYPE_INFO, timeout=5)
+                self.session.open(
+                    MessageBox,
+                    success_msg,
+                    MessageBox.TYPE_INFO,
+                    timeout=5)
         except Exception as e:
             # Handle any exceptions and show an error message
-            self.session.open(MessageBox, "Exception running command:" + str(e), MessageBox.TYPE_ERROR, timeout=15)
+            self.session.open(
+                MessageBox,
+                "Exception running command:" +
+                str(e),
+                MessageBox.TYPE_ERROR,
+                timeout=15)
         finally:
             # Ensure the script_running flag is cleared after execution
             self.script_running.clear()
@@ -1293,33 +1472,58 @@ class MainMenus(Screen):
     def executeScript(self, script_path):
         try:
             # Run the script with shell access and capture the output
-            result = subprocess.run(script_path, shell=True, capture_output=True, text=True)
+            result = subprocess.run(
+                script_path,
+                shell=True,
+                capture_output=True,
+                text=True)
             # Check if the script execution was successful
             if result.returncode != 0:
-                self.session.open(MessageBox, "Error running script:\n" + result.stderr, MessageBox.TYPE_ERROR, timeout=15)
+                self.session.open(
+                    MessageBox,
+                    "Error running script:\n" +
+                    result.stderr,
+                    MessageBox.TYPE_ERROR,
+                    timeout=15)
             else:
                 # Split the output into pages to display
                 PAGE_SIZE = 1000
-                output_pages = [result.stdout[i:i + PAGE_SIZE] for i in range(0, len(result.stdout), PAGE_SIZE)]
+                output_pages = [result.stdout[i:i + PAGE_SIZE]
+                                for i in range(0, len(result.stdout), PAGE_SIZE)]
                 self.showOutputPages(output_pages, 0)
         except Exception as e:
             # Handle any exceptions and show an error message
-            self.session.open(MessageBox, "Exception running script:" + str(e), MessageBox.TYPE_ERROR, timeout=15)
+            self.session.open(
+                MessageBox,
+                "Exception running script:" +
+                str(e),
+                MessageBox.TYPE_ERROR,
+                timeout=15)
         finally:
             # Ensure the script_running flag is cleared after execution
             self.script_running.clear()
 
     # Executes command on a given input "yes"
     def askForConfirmation(self, message, callback):
-        self.session.openWithCallback(callback, MessageBox, message, MessageBox.TYPE_YESNO)
+        self.session.openWithCallback(
+            callback, MessageBox, message, MessageBox.TYPE_YESNO)
 
-    # Prompt user to confirm whether they want to see the process (or background) for Free Cline Access # fixed lululla
+    # Prompt user to confirm whether they want to see the process (or
+    # background) for Free Cline Access # fixed lululla
     def askForUserPreference(self):
-        self.session.openWithCallback(self.runScriptWithPreference, MessageBox, "Do you want to see the process?", MessageBox.TYPE_YESNO)
+        self.session.openWithCallback(
+            self.runScriptWithPreference,
+            MessageBox,
+            "Do you want to see the process?",
+            MessageBox.TYPE_YESNO)
 
     # Prompt the user to confirm whether they want to update the script
     def askForUpdateFca(self):
-        self.session.openWithCallback(self.UpdateFca, MessageBox, "Do you want to see the process?", MessageBox.TYPE_YESNO)
+        self.session.openWithCallback(
+            self.UpdateFca,
+            MessageBox,
+            "Do you want to see the process?",
+            MessageBox.TYPE_YESNO)
 
     # Displays FAQ information in paginated format recoded from lululla
     def faq(self):
@@ -1405,11 +1609,11 @@ class MainMenus(Screen):
             ("A19: Contributions are welcome. Review the plugin's source code to understand its structure and functionality. You can contribute by adding new features, fixing bugs, or improving documentation. Contact me for more details.\n\n") +
             ("Contact and Support\n") +
             ("Q20: Where can I get help if I encounter issues with the plugin?\n") +
-            ("A20: Visit the Help section within the plugin for FAQs, contact information, and support options. You can also reach out to the Enigma2 community on linuxSatSupport for additional assistance.\n")
-        )
+            ("A20: Visit the Help section within the plugin for FAQs, contact information, and support options. You can also reach out to the Enigma2 community on linuxSatSupport for additional assistance.\n"))
 
         PAGE_SIZE = 800
-        output_pages = [faq_text[i:i + PAGE_SIZE] for i in range(0, len(faq_text), PAGE_SIZE)]
+        output_pages = [faq_text[i:i + PAGE_SIZE]
+                        for i in range(0, len(faq_text), PAGE_SIZE)]
 
         # Show the first page of the FAQ
         self.showOutputPages(output_pages, 0)
@@ -1417,20 +1621,30 @@ class MainMenus(Screen):
     # recoded from lululla
     def showOutputPages(self, pages, current_page):
         if current_page < len(pages):
-            message = "Script output (Page %s / %s):\n%s" % (current_page + 1, len(pages), pages[current_page])
+            message = "Script output (Page %s / %s):\n%s" % (
+                current_page + 1, len(pages), pages[current_page])
             try:
                 self.session.openWithCallback(
-                    lambda ret: self.showOutputPages(pages, current_page + 1 if ret else max(current_page - 1, 0)),
+                    lambda ret: self.showOutputPages(
+                        pages,
+                        current_page +
+                        1 if ret else max(
+                            current_page -
+                            1,
+                            0)),
                     MessageBox,
                     message,
-                    MessageBox.TYPE_INFO
-                )
+                    MessageBox.TYPE_INFO)
             except Exception as e:
                 print("Error opening MessageBox: %s" % str(e))
 
     # Provides contact information for support
     def contactSupport(self):
-        self.session.open(MessageBox, "If you're looking for support or have questions about the Simple Zoom Panel, you can visit the following link: https://www.linuxsat-support.com/thread/157589-simple-zoom-panel/. This forum thread is a great resource for troubleshooting and getting assistance from the community. Feel free to check it out for detailed guidance and support!", MessageBox.TYPE_INFO, timeout=30)
+        self.session.open(
+            MessageBox,
+            "If you're looking for support or have questions about the Simple Zoom Panel, you can visit the following link: https://www.linuxsat-support.com/thread/157589-simple-zoom-panel/. This forum thread is a great resource for troubleshooting and getting assistance from the community. Feel free to check it out for detailed guidance and support!",
+            MessageBox.TYPE_INFO,
+            timeout=30)
 
     # Displays information about the plugin and its creators
     def info(self):
@@ -1447,9 +1661,12 @@ class MainMenus(Screen):
             "- Lululla\n\n"
             "Overview:\n"
             "The Simple ZOOM Panel plugin provides an intuitive and user-friendly (somewhat) interface for Enigma2-based systems. "
-            "It offers a centralized hub for accessing tools, extras, settings, and help, enhancing the overall user experience."
-        )
-        self.session.open(MessageBox, message, MessageBox.TYPE_INFO, timeout=30)
+            "It offers a centralized hub for accessing tools, extras, settings, and help, enhancing the overall user experience.")
+        self.session.open(
+            MessageBox,
+            message,
+            MessageBox.TYPE_INFO,
+            timeout=30)
 
     # Handle Left key press # fixed lululla
     def keyLeft(self):
@@ -1494,7 +1711,8 @@ class SubMenu(Screen):
             <widget name="menu" position="10,10" size="580,380" scrollbarMode="showOnDemand" />
         </screen>"""
 
-    # Initialize the submenu screen by setting up session, title, menu items, and action mappings.
+    # Initialize the submenu screen by setting up session, title, menu items,
+    # and action mappings.
     def __init__(self, session, title, menuItems):
         self.session = session
         Screen.__init__(self, session)
@@ -1530,6 +1748,4 @@ def Plugins(**kwargs):
             description=_('It is like ZOOM but simpler, and also a panel.'),
             where=PluginDescriptor.WHERE_PLUGINMENU,
             icon='/usr/lib/enigma2/python/Plugins/Extensions/SimpleZOOMPanel/Graphics/plugin.png',
-            fnc=main
-        )
-    ]
+            fnc=main)]
